@@ -83,9 +83,9 @@ dependencies {
 
 **Import the library:**
 
-Kotlin
 
-```
+
+```Kotlin
 import diy.rcache.lru.RDiskLRUCache
 
 ```
@@ -93,7 +93,7 @@ import diy.rcache.lru.RDiskLRUCache
 Use code [with caution.](/faq#coding)
 
 **1. Create a `RDiskLRUCache` instance:**
-```
+```Kotlin
 val cacheConfig = RDiskLRUCache.Builder()
   .maxSizeOnDisk(1024L * 1024L * 10)
   .maxSizeInMem(1024L * 1024L)
@@ -107,7 +107,7 @@ val cacheConfig = RDiskLRUCache.Builder()
  This code first creates an `RDiskLRUCache` instance with a maximum size of 2GB and a cache location of `/data/cache`. Then, it stores a cache entry with the key "my_key" and the value "some data". Finally, it calls the `flush()` method to persist all cached data to disk.
 
 
-```
+```Kotlin
 val key = "my_data_key"
 val value = "This is some data to be cached".toByteArray()
 cache.store(key, value)
@@ -115,7 +115,7 @@ cache.store(key, value)
 
 **3 . Fetch data from cache **
 
-```
+```Kotlin
 val fetchedData = cache.fetch(key)
 
 if (fetchedData != null) {
@@ -128,7 +128,7 @@ if (fetchedData != null) {
 
 **3. Flush Cache (write updated entries to disk and remove old entries):**
 
-```
+```Kotlin
 val flushDeferred = cache.flush()
 
 // Wait for the operation to complete
@@ -156,7 +156,7 @@ By following these best practices, you can optimize the performance and reliabil
 
 For uses on Android if you would like to manage the size of the memory you could register a receiver for ACTION_DEVICE_STORAGE_LOW and invoke the cache management functions
 
-```
+```Kotlin
 val lowMemoryReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_DEVICE_STORAGE_LOW) {
@@ -170,7 +170,7 @@ registerReceiver(lowMemoryReceiver, IntentFilter(Intent.ACTION_DEVICE_STORAGE_LO
 ```
 **Memory management - additional strategies:**
 
-```
+```Kotlin
 // In your logout function
 cache.clearAll().await() // Clear all cache data on logout
 
@@ -179,9 +179,8 @@ This will clear all data from both the in-memory cache and the disk cache, ensur
 
 Here's a complete example with a logout button:
 
-Kotlin
 
-```
+```Kotlin
 class MyActivity : AppCompatActivity() {
 
     private lateinit var cache: RDiskLRUCache
