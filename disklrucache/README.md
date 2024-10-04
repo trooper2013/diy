@@ -50,24 +50,22 @@ Cache  Store call
 sequenceDiagram
 Client ->> RDiskLRUCache : store(key, byteArray)
 RDiskLRUCache ->> InMemLru: Does Key exist?
-InMemLru ->> RDiskLRUCache: store(key, byteArray)
-RDiskLRUCache ->> Client
+InMemLru ->> RDiskLRUCache: update & store last accessed
+RDiskLRUCache ->> Client : Done
 ```
-Cache  Flush call
+Cache  Flush 
  ```mermaid
 sequenceDiagram
-Client ->> RDiskLRUCache : store(key, byteArray)
-RDiskLRUCache ->> InMemLru: Does Key exist?
-InMemLru ->> RDiskLRUCache: store(key, byteArray)
-RDiskLRUCache ->> Client
-```
+Client ->> RDiskLRUCache : flush
+RDiskLRUCache ->> RDiskLRUCache: Start Background Job
+RDiskLRUCache ->> InMemLru: Get All cache entries
 
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
+RDiskLRUCache ->> DiskLRU: Update/Delete
+RDiskLRUCache ->> Journal: Add transaction in Journal
+RDiskLRUCache ->> DiskLRU: Update on Disk
+RDiskLRUCache ->> InMemLru: Update In Mem
+RDiskLRUCache ->> Journal: Mark Completion of transaction
+RDiskLRUCache ->> Client: Completed
 ```
 
 ## Usage
