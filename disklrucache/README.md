@@ -136,7 +136,7 @@ if (flushed) {
   Log.w("RDiskLRUCache", "Failed to flush cache")
 }
 ```
-*** Best Practices for invoking flush ***
+ ## ***Best Practices for invoking flush ***
 
 To ensure optimal efficiency, consistency, and persistence in your `RDiskLRUCache` implementation, consider the following best practices when calling the `flush()` method:
 
