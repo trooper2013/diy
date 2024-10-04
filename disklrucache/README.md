@@ -90,8 +90,6 @@ import diy.rcache.lru.RDiskLRUCache
 
 ```
 
-Use code [with caution.](/faq#coding)
-
 **1. Create a `RDiskLRUCache` instance:**
 ```Kotlin
 val cacheConfig = RDiskLRUCache.Builder()
