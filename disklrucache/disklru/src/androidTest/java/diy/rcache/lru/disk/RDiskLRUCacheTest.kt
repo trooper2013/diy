@@ -1,4 +1,4 @@
-package diy.rcache.lru
+package diy.rcache.lru.disk
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -34,7 +34,6 @@ class RDiskLRUCacheTest {
   private val fileSize = 1024
   private val cacheSize  = maxFiles * fileSize * 1L
 
-
   @Before
   fun setupFiles() {
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -58,8 +57,12 @@ class RDiskLRUCacheTest {
   fun `Add a couple Entries in Memory`() = runTest {
 
       val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-      assertEquals("diy.rcache.lru", appContext.packageName)
-      val cache = RDiskLRUCache(RCacheConfig(sizeOnDisk = cacheSize, cacheLocation = appContext.dataDir))
+      val cache = diy.rcache.lru.disk.RDiskLRUCache(
+        diy.rcache.lru.disk.RCacheConfig(
+          sizeOnDisk = cacheSize,
+          cacheLocation = appContext.dataDir
+        )
+      )
       runBlocking{
         cache.clearAll().await()
       }
@@ -84,8 +87,12 @@ class RDiskLRUCacheTest {
   fun `Add a couple Entries in Memory and Disk`() = runTest {
 
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    assertEquals("diy.rcache.lru", appContext.packageName)
-    val cache = RDiskLRUCache(RCacheConfig(sizeOnDisk = cacheSize, cacheLocation = appContext.dataDir))
+    val cache = diy.rcache.lru.disk.RDiskLRUCache(
+      diy.rcache.lru.disk.RCacheConfig(
+        sizeOnDisk = cacheSize,
+        cacheLocation = appContext.dataDir
+      )
+    )
 
     runBlocking{
       cache.clearAll().await()
@@ -111,8 +118,12 @@ class RDiskLRUCacheTest {
   fun `Test Updated Time on Disk`() = runTest {
 
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    assertEquals("diy.rcache.lru", appContext.packageName)
-    val cache = RDiskLRUCache(RCacheConfig(sizeOnDisk = cacheSize, cacheLocation = appContext.dataDir))
+    val cache = diy.rcache.lru.disk.RDiskLRUCache(
+      diy.rcache.lru.disk.RCacheConfig(
+        sizeOnDisk = cacheSize,
+        cacheLocation = appContext.dataDir
+      )
+    )
     assertTrue(cache.clearAll().await())
     assertTrue(cache.cacheConfig.cacheFolder.exists())
     assertTrue(cache.cacheConfig.journalFileLocation.exists())
@@ -142,8 +153,12 @@ class RDiskLRUCacheTest {
   fun `Test Multi threaded access to cache state and its correctness `() = runTest {
 
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    assertEquals("diy.rcache.lru", appContext.packageName)
-    val cache = RDiskLRUCache(RCacheConfig(sizeOnDisk = cacheSize, cacheLocation = appContext.dataDir))
+    val cache = diy.rcache.lru.disk.RDiskLRUCache(
+      diy.rcache.lru.disk.RCacheConfig(
+        sizeOnDisk = cacheSize,
+        cacheLocation = appContext.dataDir
+      )
+    )
     assertTrue(cache.clearAll().await())
     assertTrue(cache.cacheConfig.cacheFolder.exists())
     assertTrue(cache.cacheConfig.journalFileLocation.exists())
@@ -190,8 +205,12 @@ class RDiskLRUCacheTest {
   fun `Test Cache Size must not exceed set Size `() = runTest {
 
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    assertEquals("diy.rcache.lru", appContext.packageName)
-    val cache = RDiskLRUCache(RCacheConfig(sizeOnDisk = 5L * fileSize, cacheLocation = appContext.dataDir))
+    val cache = diy.rcache.lru.disk.RDiskLRUCache(
+      diy.rcache.lru.disk.RCacheConfig(
+        sizeOnDisk = 5L * fileSize,
+        cacheLocation = appContext.dataDir
+      )
+    )
     assertTrue(cache.clearAll().await())
     assertTrue(cache.cacheConfig.cacheFolder.exists())
     assertTrue(cache.cacheConfig.journalFileLocation.exists())

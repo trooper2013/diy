@@ -84,7 +84,7 @@ RDiskLRUCache ->> Client: Completed
 
 ```
 dependencies {
-  implementation "com.github.your-username:r-disk-lru-cache:<version>"
+  implementation "com.github.trooper2013:r-disk-lru-cache:0.5"
 }
 
 ```
@@ -94,7 +94,7 @@ dependencies {
 
 
 ```Kotlin
-import diy.rcache.lru.RDiskLRUCache
+import diy.rcache.lru.disk.RDiskLRUCache
 
 ```
 

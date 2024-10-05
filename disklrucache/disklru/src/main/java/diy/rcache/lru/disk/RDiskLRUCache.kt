@@ -1,4 +1,4 @@
-package diy.rcache.lru
+package diy.rcache.lru.disk
 
 import android.util.Log
 import java.io.File
@@ -43,9 +43,9 @@ internal enum class CacheEntryState {
   UPDATED, ACCESSED, SYNCED, DELETED
 }
 
-internal class RCacheConfig(sizeOnDisk: Long = DEFAULT_CACHE_SIZE, sizeInMemory: Long = DEFAULT_CACHE_SIZE/4, cacheLocation: File = DEFAULT_CACHE_LOCATION) {
+internal class RCacheConfig(sizeOnDisk: Long = DEFAULT_CACHE_SIZE, sizeInMemory: Long = DEFAULT_CACHE_SIZE /4, cacheLocation: File = DEFAULT_CACHE_LOCATION) {
   val maxSizeOnDisk = if(sizeOnDisk <= 0) DEFAULT_CACHE_SIZE else sizeOnDisk
-  val maxSizeInMemory = if(sizeInMemory <= 0) DEFAULT_CACHE_SIZE/4 else sizeInMemory.coerceAtMost(sizeOnDisk)
+  val maxSizeInMemory = if(sizeInMemory <= 0) DEFAULT_CACHE_SIZE /4 else sizeInMemory.coerceAtMost(sizeOnDisk)
   val journalFileLocation = File(cacheLocation.absolutePath + PATH_SEPARATOR + "jrnl")
   val journalFile = File(journalFileLocation.absolutePath + PATH_SEPARATOR + journalFileName)
   var cacheFolder = File(cacheLocation.absolutePath + PATH_SEPARATOR + defaultCacheDataDir)
@@ -93,7 +93,8 @@ internal class CacheEntry {
 
 }
 
-class RDiskLRUCache private constructor(private val cacheConfig: RCacheConfig = RCacheConfig()) : Cacheable {
+class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig = RCacheConfig()) :
+  Cacheable {
 
   private var lruMap = mutableMapOf<String, CacheEntry>()
   private val readWriteLock = ReentrantReadWriteLock()
@@ -431,7 +432,7 @@ class RDiskLRUCache private constructor(private val cacheConfig: RCacheConfig = 
   companion object Builder {
     class RDiskLRUCacheBuilder {
       private var cacheSizeOnDisk: Long = DEFAULT_CACHE_SIZE
-      private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE/4
+      private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE /4
       private var cacheLocation: File = DEFAULT_CACHE_LOCATION
 
       fun maxSizeOnDisk(size: Long): RDiskLRUCacheBuilder {
