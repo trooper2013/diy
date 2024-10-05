@@ -11,6 +11,16 @@
 -   **Asynchronous Operations:** Many operations are performed asynchronously using coroutines for improved performance.
 -   **Customizable:** Can be configured with various options, including cache size, location, and eviction policies.
 
+## High Level Architecture
+```mermaid
+graph LR
+A[Client] --> B[RDiskLruCache] 
+B[RDiskLruCache] --> C{isInMem}
+C{isInMem} --Y--> D(MemLru)
+C{isInMem} --N--> E(DiskLru)
+E(DiskLru)--Load--> D(MemLru)
+```
+
 ## Sequence
 
 Cache Miss 
