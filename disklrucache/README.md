@@ -22,8 +22,6 @@ flowchart LR
     B --> C("Memory Lru")
     C --> D("Disk Lru")
     D --> E["Journal"] & F["CacheFiles"]
-    E@{ shape: cyl}
-    F@{ shape: docs}
     style A stroke:#FF6D00
     style B stroke:#FF6D00
     style C stroke:#FF6D00
@@ -38,6 +36,10 @@ flowchart LR
 Cache Miss 
 
 ```mermaid
+---
+config:
+  look: handDrawn
+---
 sequenceDiagram
 Client ->> RDiskLRUCache : fetch(key)
 RDiskLRUCache ->> InMemLru: Does Key exist?
