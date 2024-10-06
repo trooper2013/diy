@@ -13,12 +13,41 @@
 
 ## High Level Architecture
 ```mermaid
-graph LR
-A[Client] --> B[RDiskLruCache] 
-B[RDiskLruCache] --> C{isInMem}
-C{isInMem} --Y--> D(MemLru)
-C{isInMem} --N--> E(DiskLru)
-E(DiskLru)--Load--> D(MemLru)
+---
+config:
+  look: handDrawn
+---
+flowchart LR
+%%Nodes
+A("Client")
+B("RDiskLruCache")
+C("Memory Lru")
+D("Disk Lru")
+F["CacheFiles"]
+E["Journal"]
+
+%% Shapes
+E@{ shape: cyl}
+F@{ shape: docs}
+
+%% Edge connections
+
+    A-->B
+    B --> C 
+    C -->  D
+    D --> E & F
+
+  
+
+%% Individual node styling.
+    style A stroke:#FF6D00
+    style B stroke:#FF6D00
+    style C stroke:#FF6D00
+    style D stroke:#FF6D00
+    style E color:#000000, fill:#AA00FF, stroke:#AA00FF,fill:#FFFFFF,stroke:#D50000
+    style F stroke:#D50000,stroke-width:1px,stroke-dasharray: 0
+
+
 ```
 
 ## Sequence
@@ -84,7 +113,7 @@ RDiskLRUCache ->> Client: Completed
 
 ```
 dependencies {
-  implementation "com.github.trooper2013:r-disk-lru-cache:0.5"
+  implementation "com.github.trooper2013:disklru:0.5"
 }
 
 ```
