@@ -18,35 +18,18 @@ config:
   look: handDrawn
 ---
 flowchart LR
-%%Nodes
-A("Client")
-B("RDiskLruCache")
-C("Memory Lru")
-D("Disk Lru")
-F["CacheFiles"]
-E["Journal"]
-
-%% Shapes
-E@{ shape: cyl}
-F@{ shape: docs}
-
-%% Edge connections
-
-    A-->B
-    B --> C 
-    C -->  D
-    D --> E & F
-
-  
-
-%% Individual node styling.
+    A("Client") --> B("RDiskLruCache")
+    B --> C("Memory Lru")
+    C --> D("Disk Lru")
+    D --> E["Journal"] & F["CacheFiles"]
+    E@{ shape: cyl}
+    F@{ shape: docs}
     style A stroke:#FF6D00
     style B stroke:#FF6D00
     style C stroke:#FF6D00
     style D stroke:#FF6D00
     style E color:#000000, fill:#AA00FF, stroke:#AA00FF,fill:#FFFFFF,stroke:#D50000
     style F stroke:#D50000,stroke-width:1px,stroke-dasharray: 0
-
 
 ```
 
