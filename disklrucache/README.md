@@ -121,7 +121,7 @@ val cacheConfig = RDiskLRUCache.Builder()
   .build()
 ```
 
-**2. Store data in cache **
+**2. Store data in cache**
 
 ***Using a ByteArray:***
  This code first creates an `RDiskLRUCache` instance with a maximum size of 2GB and a cache location of `/data/cache`. Then, it stores a cache entry with the key "my_key" and the value "some data". Finally, it calls the `flush()` method to persist all cached data to disk.
@@ -133,7 +133,7 @@ val value = "This is some data to be cached".toByteArray()
 cache.store(key, value)
 ```
 
-**3 . Fetch data from cache **
+**3.Fetch data from cache**
 
 ```Kotlin
 val fetchedData = cache.fetch(key)
@@ -146,7 +146,7 @@ if (fetchedData != null) {
 }
 ```
 
-**3. Flush Cache (write updated entries to disk and remove old entries):**
+**3.Flush Cache (write updated entries to disk and remove old entries):**
 
 ```Kotlin
 val flushDeferred = cache.flush()
@@ -160,7 +160,7 @@ if (flushed) {
   Log.w("RDiskLRUCache", "Failed to flush cache")
 }
 ```
- ## ***Best Practices for invoking flush ***
+ ## Best Practices for invoking flush 
 
 To ensure optimal efficiency, consistency, and persistence in your `RDiskLRUCache` implementation, consider the following best practices when calling the `flush()` method:
 
