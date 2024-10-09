@@ -1,6 +1,6 @@
 ## ImageLoader - Efficient Image Loading for Android
 
-This is a README file for the `ImageLoader` library, written in Kotlin for Android applications.
+This is a README file for the `ImageLoader` library, written in Kotlin for Android applications. 
 
 **What it does:**
 
@@ -31,9 +31,7 @@ dependencies {
 
 1.  **Create an ImageLoader instance:**
 
-Kotlin
-
-```
+```Kotlin
 val imageLoader = ImageLoader.Builder()
   .maxSizeOnDisk(10 * 1024 * 1024) // Set max cache size on disk to 10 MB
   .imageWidth(500) // Set desired image width
@@ -46,9 +44,7 @@ Use code [with caution.](/faq#coding)
 
 2.  **Fetch an image:**
 
-Kotlin
-
-```
+```Kotlin
 val url = URL("https://example.com/image.jpg")
 val deferredBitmap: Deferred<Bitmap?> = imageLoader.fetchImage(url)
 
@@ -76,7 +72,6 @@ imageLoader.flush().await()
 
 ```
 
-Use code [with caution.](/faq#coding)
 
 -   **Remove all cached images:**
 
@@ -86,8 +81,6 @@ Kotlin
 imageLoader.removeAll().await()
 
 ```
-
-Use code [with caution.](/faq#coding)
 
 **Customization Options:**
 
