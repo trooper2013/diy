@@ -16,9 +16,66 @@ private const val DEFAULT_WIDTH = 1080
 private const val DEFAULT_HEIGHT = 720
 private const val DEFAULT_QUALITY = 80
 
-interface ImageLoading {
+interface ImageLoader {
   fun fetchImage(url: URL) : Deferred<Bitmap?>
   fun removeAll() : Deferred<Boolean>
+  companion object Builder {
+
+    private var cacheSizeOnDisk: Long = DEFAULT_CACHE_SIZE
+    private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE / 4
+    private var cacheLocation: File = File("image_cache")
+    private var imageHeight: Int = DEFAULT_HEIGHT
+    private var imageWidth: Int = DEFAULT_WIDTH
+    private var imageQuality: Int = DEFAULT_QUALITY
+    private var imageFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
+
+    fun maxSizeOnDisk(size: Long): ImageLoader.Builder {
+      this.cacheSizeOnDisk = size
+      return this
+    }
+
+    fun maxSizeInMem(size: Long): ImageLoader.Builder {
+      this.cacheSizeInMem = size
+      return this
+    }
+
+    fun cacheLocation(location: File): ImageLoader.Builder {
+      this.cacheLocation = location
+      return this
+    }
+
+    fun imageHeight(height: Int): ImageLoader.Builder {
+      this.imageHeight = height
+      return this
+    }
+
+    fun imageWidth(width: Int): ImageLoader.Builder {
+      this.imageHeight = width
+      return this
+    }
+
+    fun imageQuality(quality: Int): ImageLoader.Builder {
+      this.imageQuality = quality
+      return this
+    }
+
+    fun imageFormat(format: CompressFormat): ImageLoader.Builder {
+      this.imageFormat = format
+      return this
+    }
+
+
+    fun build(): ImageLoader {
+      return RImageLoaderImpl(
+        RImageLoaderConfig(
+          cacheLocation, cacheSizeInMem,
+          cacheSizeOnDisk, imageHeight,
+          imageWidth, imageQuality, imageFormat
+        )
+      )
+    }
+  }
+
 }
 
 internal class RImageLoaderConfig(internal val cacheLocation: File,
@@ -31,7 +88,7 @@ internal class RImageLoaderConfig(internal val cacheLocation: File,
 
 }
 
-class RImageLoader internal constructor (): ImageLoading {
+internal class RImageLoaderImpl internal constructor (): ImageLoader {
   private val TAG = "RImageLoader"
   private lateinit var imageConfig: RImageLoaderConfig
   private lateinit var diskLruCache: LRUDiskCache
@@ -63,7 +120,7 @@ class RImageLoader internal constructor (): ImageLoading {
         Log.d(TAG, "Cache Miss for $url")
         bitmap = loadFromURL(url)
         val stream = ByteArrayOutputStream()
-        bitmap.compress(imageConfig.format, 80, stream)
+        bitmap.compress(imageConfig.format, imageConfig.imageQuality, stream)
         diskLruCache.store(key, stream.toByteArray())
         Log.d(TAG, "Store key in cache for $url")
       }
@@ -79,60 +136,5 @@ class RImageLoader internal constructor (): ImageLoading {
     return BitmapFactory.decodeStream(inputStream)
   }
 
-  companion object Builder {
 
-    private var cacheSizeOnDisk: Long = DEFAULT_CACHE_SIZE
-    private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE / 4
-    private var cacheLocation: File = File("image_cache")
-    private var imageHeight: Int = DEFAULT_HEIGHT
-    private var imageWidth: Int = DEFAULT_WIDTH
-    private var imageQuality: Int = DEFAULT_QUALITY
-    private var imageFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
-
-    fun maxSizeOnDisk(size: Long): RImageLoader.Builder {
-      this.cacheSizeOnDisk = size
-      return this
-    }
-
-    fun maxSizeInMem(size: Long): RImageLoader.Builder {
-      this.cacheSizeInMem = size
-      return this
-    }
-
-    fun cacheLocation(location: File): RImageLoader.Builder {
-      this.cacheLocation = location
-      return this
-    }
-
-    fun imageHeight(height: Int): RImageLoader.Builder {
-      this.imageHeight = height
-      return this
-    }
-
-    fun imageWidth(width: Int): RImageLoader.Builder {
-      this.imageHeight = width
-      return this
-    }
-
-    fun imageQuality(quality: Int): RImageLoader.Builder {
-      this.imageQuality = quality
-      return this
-    }
-
-    fun imageFormat(format: CompressFormat): RImageLoader.Builder {
-      this.imageFormat = format
-      return this
-    }
-
-
-    fun build(): RImageLoader {
-      return RImageLoader(
-        RImageLoaderConfig(
-          cacheLocation, cacheSizeInMem,
-          cacheSizeOnDisk, imageHeight,
-          imageWidth, imageQuality, imageFormat
-        )
-      )
-    }
-  }
 }

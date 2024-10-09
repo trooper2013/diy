@@ -6,22 +6,11 @@ import java.net.URL
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.File
-import java.nio.file.Paths
-import kotlin.io.path.getLastModifiedTime
-import kotlin.time.measureTime
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -57,15 +46,13 @@ class RImageLoaderTest {
   @Test
   fun `Add a couple Images in Memory`() = runTest {
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    val imageLoader = diy.image.ril.RImageLoader.Builder.cacheLocation(appContext.cacheDir)
+    val imageLoader = ImageLoader.cacheLocation(appContext.cacheDir)
                     .imageFormat(Bitmap.CompressFormat.PNG)
-      .maxSizeInMem(1024L * 1024L * 10L)
+      .maxSizeInMem(1024L * 1024L * 20L)
       .maxSizeOnDisk(1024L * 1024L * 50L)
       .imageHeight(imageHeight)
       .imageWidth(imageWidth)
       .imageQuality(80).build()
-
-
 
     runBlocking {
 
