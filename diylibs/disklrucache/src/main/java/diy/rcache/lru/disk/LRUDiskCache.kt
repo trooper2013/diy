@@ -26,7 +26,7 @@ private const val journalFileName = "rjournal.bin"
 private val DEFAULT_CACHE_LOCATION = File(defaultCacheDataDir)
 private const val DEFAULT_CACHE_SIZE = 1024L * 1024L * 50L
 
-interface Cacheable {
+interface LRUDiskCache {
   fun fetch(key: String): ByteArray?
   fun store(key: String, value: ByteArray)
   fun delete(key: String)
@@ -37,6 +37,33 @@ interface Cacheable {
   fun fileCacheSize(): Deferred<Long>
   fun clearAll(): Deferred<Boolean>
   fun flush(): Deferred<Boolean>
+
+  companion object Builder {
+
+    private var cacheSizeOnDisk: Long = DEFAULT_CACHE_SIZE
+    private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE /4
+    private var cacheLocation: File = DEFAULT_CACHE_LOCATION
+
+    fun maxSizeOnDisk(size: Long): Builder {
+      this.cacheSizeOnDisk = size
+      return this
+    }
+
+    fun maxSizeInMem(size: Long): Builder {
+      this.cacheSizeInMem = size
+      return this
+    }
+
+    fun cacheLocation(location: File): Builder {
+      this.cacheLocation = location
+      return this
+    }
+
+    fun build(): LRUDiskCache {
+      return RDiskLRUCacheImpl(RCacheConfig(cacheSizeOnDisk, cacheSizeInMem, cacheLocation))
+    }
+
+  }
 }
 
 internal enum class CacheEntryState {
@@ -93,8 +120,8 @@ internal class CacheEntry {
 
 }
 
-class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig = RCacheConfig()) :
-  Cacheable {
+internal class RDiskLRUCacheImpl internal constructor(internal val cacheConfig: RCacheConfig = RCacheConfig()) :
+  LRUDiskCache {
 
   private var lruMap = mutableMapOf<String, CacheEntry>()
   private val readWriteLock = ReentrantReadWriteLock()
@@ -428,33 +455,6 @@ class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig 
         "Could not create journal file ${cacheConfig.journalFile.absolutePath} ${exc.message}"
       )
     }
-  }
-
-   companion object Builder {
-
-      private var cacheSizeOnDisk: Long = DEFAULT_CACHE_SIZE
-      private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE /4
-      private var cacheLocation: File = DEFAULT_CACHE_LOCATION
-
-      fun maxSizeOnDisk(size: Long): Builder {
-        this.cacheSizeOnDisk = size
-        return this
-      }
-
-      fun maxSizeInMem(size: Long): Builder {
-        this.cacheSizeInMem = size
-        return this
-      }
-
-      fun cacheLocation(location: File): Builder {
-        this.cacheLocation = location
-        return this
-      }
-
-      fun build(): RDiskLRUCache {
-        return RDiskLRUCache(RCacheConfig(cacheSizeOnDisk, cacheSizeInMem, cacheLocation))
-      }
-
   }
 }
 

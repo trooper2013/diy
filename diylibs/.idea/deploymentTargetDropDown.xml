@@ -8,6 +8,12 @@
       <entry key="All Tests">
         <State />
       </entry>
+      <entry key="RDiskLRUCacheTest">
+        <State />
+      </entry>
+      <entry key="Test Cache Size must not exceed set Size ()">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>

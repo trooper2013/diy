@@ -114,7 +114,7 @@ import diy.rcache.lru.disk.RDiskLRUCache
 
 **1. Create a `RDiskLRUCache` instance:**
 ```Kotlin
-val cacheConfig = RDiskLRUCache.Builder()
+val cacheConfig = LRUDiskCache
   .maxSizeOnDisk(1024L * 1024L * 10)
   .maxSizeInMem(1024L * 1024L)
   .cacheLocation(File("/path/to/cache/directory")) 

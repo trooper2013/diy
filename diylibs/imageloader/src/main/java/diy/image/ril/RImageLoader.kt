@@ -34,13 +34,13 @@ internal class RImageLoaderConfig(internal val cacheLocation: File,
 class RImageLoader internal constructor (): ImageLoading {
   private val TAG = "RImageLoader"
   private lateinit var imageConfig: RImageLoaderConfig
-  private lateinit var diskLruCache: RDiskLRUCache
+  private lateinit var diskLruCache: LRUDiskCache
 
   private val loaderScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
   internal constructor(imageConfig: RImageLoaderConfig) : this() {
     this.imageConfig = imageConfig
-    diskLruCache = RDiskLRUCache.Builder
+    diskLruCache = LRUDiskCache.Builder
       .maxSizeInMem( this.imageConfig.diskCacheSize)
       .maxSizeOnDisk(this.imageConfig.memoryCacheSize)
       .cacheLocation(this.imageConfig.cacheLocation).build()
