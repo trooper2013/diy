@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "diy"
 include(":app")
 include(":disklru")
+include(":imageloader")

@@ -34,9 +34,9 @@ interface Cacheable {
   fun clearMemoryCache()
   fun memCacheSize(): Long
 
-  suspend fun fileCacheSize(): Deferred<Long>
-  suspend fun clearAll(): Deferred<Boolean>
-  suspend fun flush(): Deferred<Boolean>
+  fun fileCacheSize(): Deferred<Long>
+  fun clearAll(): Deferred<Boolean>
+  fun flush(): Deferred<Boolean>
 }
 
 internal enum class CacheEntryState {
@@ -136,6 +136,7 @@ class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig 
       //evict the oldest entry from the cache
       var memCacheSize = this.memCacheSize()
       while (memCacheSize > this.cacheConfig.maxSizeInMemory) {
+        Log.d(TAG, "Evicting in Mem Cache")
         val entry = lruMap.entries.iterator().next()
         lruMap.remove(entry.key)
         memCacheSize -= entry.value.size
@@ -202,7 +203,7 @@ class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig 
     }
   }
 
-  override suspend fun fileCacheSize(): Deferred<Long> {
+  override fun fileCacheSize(): Deferred<Long> {
     return backgroundScope.async {
       try {
         readWriteLock.writeLock().lock()
@@ -216,11 +217,11 @@ class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig 
     }
   }
 
-  override suspend fun clearAll(): Deferred<Boolean> {
+  override fun clearAll(): Deferred<Boolean> {
     return backgroundScope.async { removeAllFromDisk() }
   }
 
-  override suspend fun flush(): Deferred<Boolean> = this.backgroundScope.async {
+  override fun flush(): Deferred<Boolean> = this.backgroundScope.async {
     val result = flushToDisk()
     val cacheSize = fileCacheSize().await()
     purgeOldestEntries(cacheSize)
@@ -429,23 +430,23 @@ class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig 
     }
   }
 
-  companion object Builder {
-    class RDiskLRUCacheBuilder {
+   companion object Builder {
+
       private var cacheSizeOnDisk: Long = DEFAULT_CACHE_SIZE
       private var cacheSizeInMem: Long = DEFAULT_CACHE_SIZE /4
       private var cacheLocation: File = DEFAULT_CACHE_LOCATION
 
-      fun maxSizeOnDisk(size: Long): RDiskLRUCacheBuilder {
+      fun maxSizeOnDisk(size: Long): Builder {
         this.cacheSizeOnDisk = size
         return this
       }
 
-      fun maxSizeInMem(size: Long): RDiskLRUCacheBuilder {
+      fun maxSizeInMem(size: Long): Builder {
         this.cacheSizeInMem = size
         return this
       }
 
-      fun cacheLocation(location: File): RDiskLRUCacheBuilder {
+      fun cacheLocation(location: File): Builder {
         this.cacheLocation = location
         return this
       }
@@ -453,7 +454,7 @@ class RDiskLRUCache internal constructor(internal val cacheConfig: RCacheConfig 
       fun build(): RDiskLRUCache {
         return RDiskLRUCache(RCacheConfig(cacheSizeOnDisk, cacheSizeInMem, cacheLocation))
       }
-    }
+
   }
 }
 

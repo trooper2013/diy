@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-  namespace = "diy.rcache.lru.disk"
+  namespace = "diy.image.ril"
   compileSdk = 34
 
   defaultConfig {
@@ -30,10 +30,10 @@ android {
 }
 
 dependencies {
+  implementation(project(":disklru"))
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)
-  implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   implementation(libs.material)
   testImplementation(libs.junit)
