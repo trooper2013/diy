@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-  implementation(project(":disklru"))
+  implementation(project(":disklrucache"))
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)
